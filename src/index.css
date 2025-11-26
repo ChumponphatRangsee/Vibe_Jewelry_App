@@ -1,0 +1,98 @@
+:root {
+  /* Color Palette */
+  --color-bg: #FAFAFA;
+  --color-primary: #D4AF37;
+  --color-primary-hover: #C5A028;
+  --color-secondary: #BCAAA4;
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+  --color-white: #FFFFFF;
+  --color-error: #EF4444;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+  
+  /* Typography */
+  --font-main: 'Nunito', 'Poppins', sans-serif;
+  
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Utilities */
+.container {
+  max-width: 480px; /* Mobile-first constraint for the "app" feel */
+  margin: 0 auto;
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  transition: transform 0.2s, background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-main);
+  border: 1px solid var(--color-secondary);
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.text-gold {
+  color: var(--color-primary);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
