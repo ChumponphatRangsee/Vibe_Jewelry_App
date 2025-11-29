@@ -14,10 +14,10 @@ function App() {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="inspire" element={<Inspire />} />
-          <Route path="try-on" element={<TryOn />} />
           <Route path="shop" element={<Shop />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+        <Route path="/try-on" element={<TryOn />} />
       </Routes>
     </BrowserRouter>
   );
