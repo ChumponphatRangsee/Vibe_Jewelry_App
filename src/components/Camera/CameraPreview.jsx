@@ -1,8 +1,9 @@
 import React from 'react';
 import Webcam from 'react-webcam';
 import { filters } from '../../data/filterData';
+import { getBeautifyFilter } from '../../data/beautifyData';
 
-const CameraPreview = ({ webcamRef, facingMode, aspectRatio = 9 / 16, currentFilter = 'none' }) => {
+const CameraPreview = ({ webcamRef, facingMode, aspectRatio = 9 / 16, currentFilter = 'none', beautifyValues }) => {
     const [error, setError] = React.useState(null);
     const [zoom, setZoom] = React.useState(1);
     const touchDistance = React.useRef(0);
@@ -10,6 +11,9 @@ const CameraPreview = ({ webcamRef, facingMode, aspectRatio = 9 / 16, currentFil
     const videoConstraints = {
         facingMode: facingMode,
         aspectRatio: aspectRatio,
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        frameRate: { ideal: 30 }
     };
 
     const handleUserMediaError = (err) => {
@@ -63,10 +67,14 @@ const CameraPreview = ({ webcamRef, facingMode, aspectRatio = 9 / 16, currentFil
         setZoom(prev => Math.min(Math.max(prev + delta, 1), 3));
     };
 
-    // Get filter CSS
-    const getFilterStyle = () => {
+    // Get combined filter CSS (filter + beautify)
+    const getCombinedFilter = () => {
         const filter = filters.find(f => f.id === currentFilter);
-        return filter ? filter.filter : 'none';
+        const filterCSS = filter ? filter.filter : 'none';
+        const beautifyCSS = getBeautifyFilter(beautifyValues || {});
+
+        const combined = [filterCSS, beautifyCSS].filter(f => f !== 'none').join(' ');
+        return combined || 'none';
     };
 
     return (
@@ -110,7 +118,7 @@ const CameraPreview = ({ webcamRef, facingMode, aspectRatio = 9 / 16, currentFil
                             objectFit: 'cover',
                             transform: `${facingMode === 'user' ? 'scaleX(-1)' : 'none'} scale(${zoom})`,
                             transition: 'transform 0.1s ease-out',
-                            filter: getFilterStyle()
+                            filter: getCombinedFilter()
                         }}
                     />
                     {/* Zoom indicator */}

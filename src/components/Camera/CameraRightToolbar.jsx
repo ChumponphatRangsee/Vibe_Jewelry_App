@@ -1,7 +1,7 @@
 import React from 'react';
 import { Timer, Sparkles, Palette, Ratio } from 'lucide-react';
 
-const CameraRightToolbar = ({ onToggleRatio, currentRatio, onFilterClick }) => {
+const CameraRightToolbar = ({ onToggleRatio, currentRatio, onFilterClick, onBeautifyClick }) => {
     const getRatioLabel = (ratio) => {
         if (ratio === 9 / 16) return '9:16';
         if (ratio === 3 / 4) return '3:4';
@@ -12,7 +12,7 @@ const CameraRightToolbar = ({ onToggleRatio, currentRatio, onFilterClick }) => {
     const tools = [
         { icon: Ratio, label: getRatioLabel(currentRatio), action: onToggleRatio },
         { icon: Timer, label: 'Timer' },
-        { icon: Sparkles, label: 'Beautify' },
+        { icon: Sparkles, label: 'Beautify', action: onBeautifyClick },
         { icon: Palette, label: 'Filters', action: onFilterClick },
     ];
 

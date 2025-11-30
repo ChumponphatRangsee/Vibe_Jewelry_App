@@ -7,12 +7,14 @@ import CameraBottomControls from '../components/Camera/CameraBottomControls';
 import JewelryPicker from '../components/TryOn/JewelryPicker';
 import OverlayManager from '../components/TryOn/OverlayManager';
 import FilterModal from '../components/Camera/FilterModal';
+import BeautifyModal from '../components/Camera/BeautifyModal';
 
 const TryOn = () => {
-    const { webcamRef, facingMode, imgSrc, aspectRatio, currentFilter, capture, switchCamera, retake, toggleRatio, setCurrentFilter } = useCamera();
+    const { webcamRef, facingMode, imgSrc, aspectRatio, currentFilter, beautifyValues, capture, switchCamera, retake, toggleRatio, setCurrentFilter, updateBeautifyValue, resetBeautify } = useCamera();
     const [overlays, setOverlays] = useState([]);
     const [showPicker, setShowPicker] = useState(true);
     const [showFilterModal, setShowFilterModal] = useState(false);
+    const [showBeautifyModal, setShowBeautifyModal] = useState(false);
 
     const handleAddJewelry = (item) => {
         const newOverlay = {
@@ -115,6 +117,7 @@ const TryOn = () => {
                 facingMode={facingMode}
                 aspectRatio={aspectRatio}
                 currentFilter={currentFilter}
+                beautifyValues={beautifyValues}
             />
 
             <CameraTopBar onFlip={switchCamera} />
@@ -122,6 +125,7 @@ const TryOn = () => {
                 onToggleRatio={toggleRatio}
                 currentRatio={aspectRatio}
                 onFilterClick={() => setShowFilterModal(true)}
+                onBeautifyClick={() => setShowBeautifyModal(true)}
             />
             <CameraBottomControls onCapture={capture} />
 
@@ -130,6 +134,14 @@ const TryOn = () => {
                 onClose={() => setShowFilterModal(false)}
                 currentFilter={currentFilter}
                 onSelectFilter={setCurrentFilter}
+            />
+
+            <BeautifyModal
+                isOpen={showBeautifyModal}
+                onClose={() => setShowBeautifyModal(false)}
+                values={beautifyValues}
+                onValueChange={updateBeautifyValue}
+                onReset={resetBeautify}
             />
         </div>
     );

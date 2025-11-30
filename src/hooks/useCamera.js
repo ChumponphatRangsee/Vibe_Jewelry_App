@@ -1,12 +1,14 @@
 import { useRef, useState, useCallback } from 'react';
 import { filters } from '../data/filterData';
+import { defaultBeautifyValues, getBeautifyFilter } from '../data/beautifyData';
 
 export const useCamera = () => {
     const webcamRef = useRef(null);
     const [facingMode, setFacingMode] = useState('user');
     const [imgSrc, setImgSrc] = useState(null);
-    const [aspectRatio, setAspectRatio] = useState(1); // Default to 1:1 (square)
+    const [aspectRatio, setAspectRatio] = useState(9 / 16); // Default to 9:16 (vertical)
     const [currentFilter, setCurrentFilter] = useState('none');
+    const [beautifyValues, setBeautifyValues] = useState(defaultBeautifyValues);
 
     const toggleRatio = useCallback(() => {
         setAspectRatio((prev) => {
@@ -16,17 +18,36 @@ export const useCamera = () => {
         });
     }, []);
 
+    const updateBeautifyValue = useCallback((key, value) => {
+        setBeautifyValues(prev => ({
+            ...prev,
+            [key]: value
+        }));
+    }, []);
+
+    const resetBeautify = useCallback(() => {
+        setBeautifyValues(defaultBeautifyValues);
+    }, []);
+
     const capture = useCallback(() => {
         if (webcamRef.current) {
             const imageSrc = webcamRef.current.getScreenshot();
 
-            // If no filter is applied, just set the image
-            if (currentFilter === 'none') {
+            // Get filter and beautify CSS
+            const filterObj = filters.find(f => f.id === currentFilter);
+            const filterCSS = filterObj ? filterObj.filter : 'none';
+            const beautifyCSS = getBeautifyFilter(beautifyValues);
+
+            // Combine filters
+            const combinedFilter = [filterCSS, beautifyCSS].filter(f => f !== 'none').join(' ');
+
+            // If no effects applied, just set the image
+            if (combinedFilter === '') {
                 setImgSrc(imageSrc);
                 return;
             }
 
-            // Apply filter using canvas
+            // Apply effects using canvas
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
@@ -35,21 +56,17 @@ export const useCamera = () => {
                 canvas.width = img.width;
                 canvas.height = img.height;
 
-                // Get filter CSS from filterData
-                const filterObj = filters.find(f => f.id === currentFilter);
-                const filterCSS = filterObj ? filterObj.filter : 'none';
-
-                // Apply filter and draw image
-                ctx.filter = filterCSS;
+                // Apply combined filter and draw image
+                ctx.filter = combinedFilter;
                 ctx.drawImage(img, 0, 0);
 
                 // Convert canvas to data URL
-                const filteredImageSrc = canvas.toDataURL('image/jpeg');
-                setImgSrc(filteredImageSrc);
+                const processedImageSrc = canvas.toDataURL('image/jpeg');
+                setImgSrc(processedImageSrc);
             };
             img.src = imageSrc;
         }
-    }, [webcamRef, currentFilter]);
+    }, [webcamRef, currentFilter, beautifyValues]);
 
     const switchCamera = useCallback(() => {
         setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
@@ -65,10 +82,13 @@ export const useCamera = () => {
         imgSrc,
         aspectRatio,
         currentFilter,
+        beautifyValues,
         capture,
         switchCamera,
         retake,
         toggleRatio,
-        setCurrentFilter
+        setCurrentFilter,
+        updateBeautifyValue,
+        resetBeautify
     };
 };
